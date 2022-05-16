@@ -1,5 +1,7 @@
 To Run:
 - Install 'chromedriver' - https://chromedriver.chromium.org/
+- Insert the chromedriver into PATH - https://www.youtube.com/watch?v=z49LHy0dKIY&ab_channel=SQATools
+- Install selenium - open cmd -> "pip install selenium"
 - Place 'chromedriver' in this folder
 - Open cmd and install selenium (just write: "pip install selenium")
 - Open playlist.py -> Change the youtube playlist URL you want to download
