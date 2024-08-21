@@ -7,6 +7,9 @@ from playlist import playlist_url
 # import Action chains
 from selenium.webdriver.common.action_chains import ActionChains
 # import KEYS
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 """
 * class name: downloadBot
@@ -15,7 +18,9 @@ from selenium.webdriver.common.keys import Keys
 class downloadBot():
     def __init__(self):
         #The chrome web driver path
-        self.driver = webdriver.Chrome('C:\\Users\\sagiv\\sagiv-GitHub\\auto-album-download-bot\\chromedriver')
+        chrome_options = Options()
+        service = Service('chromedriver.exe')
+        self.driver = webdriver.Chrome(service=service, options=chrome_options)
         print("\n-------------------------------------------------------------")
         print("""\nＳａｇｉｖ Ａｎｔｅｂｉ － Ａｌｌ Ｒｉｇｈｔｓ Ｒｅｓｅｒｖｅｄ\n""")
         print("-------------------------------------------------------------\n")
@@ -40,13 +45,7 @@ class downloadBot():
             # Open the playlist page
             self.driver.get(url)
         except Exception:
-            print("""
-██╗░░░██╗██████╗░██╗░░░░░  ██████╗░██████╗░░█████╗░██████╗░██╗░░░░░░█████╗░███╗░░░███╗
-██║░░░██║██╔══██╗██║░░░░░  ██╔══██╗██╔══██╗██╔══██╗██╔══██╗██║░░░░░██╔══██╗████╗░████║
-██║░░░██║██████╔╝██║░░░░░  ██████╔╝██████╔╝██║░░██║██████╦╝██║░░░░░███████║██╔████╔██║
-██║░░░██║██╔══██╗██║░░░░░  ██╔═══╝░██╔══██╗██║░░██║██╔══██╗██║░░░░░██╔══██║██║╚██╔╝██║
-╚██████╔╝██║░░██║███████╗  ██║░░░░░██║░░██║╚█████╔╝██████╦╝███████╗██║░░██║██║░╚═╝░██║
-░╚═════╝░╚═╝░░╚═╝╚══════╝  ╚═╝░░░░░╚═╝░░╚═╝░╚════╝░╚═════╝░╚══════╝╚═╝░░╚═╝╚═╝░░░░░╚═╝""")
+            print("URL Problem")
             print(" 𝗽𝗹𝗲𝗮𝘀𝗲 𝗶𝗻𝘀𝗲𝗿𝘁 𝗮 𝗰𝗼𝗿𝗿𝗲𝗰𝘁 𝗨𝗥𝗟, 𝗮𝗻𝗱 𝗿𝘂𝗻 𝘁𝗵𝗲 𝗯𝗼𝘁 𝗮𝗴𝗮𝗶𝗻.")
         #mute the tab
 
@@ -55,12 +54,13 @@ class downloadBot():
         # create action chain object
         action = ActionChains(self.driver)
         # perform the operation
+        sleep(5)
         action.send_keys('m').perform()
-        sleep(0.5)
+        sleep(2)
         #if the tab is to small it need to check one of two buttons
         try:
             #number of songs to download
-            num_songs_str = self.driver.find_element_by_xpath("/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[5]/div[2]/div/ytd-playlist-panel-renderer/div/div[1]/div/div[1]/div[1]/div/div/yt-formatted-string/span[3]").text
+            num_songs_str = self.driver.find_element(By.XPATH,'//*[@id="publisher-container"]/div/yt-formatted-string/span[3]').text
         except Exception:
             num_songs_str = self.driver.find_element_by_xpath("/html/body/ytd-app/div/ytd-page-manager/ytd-watch-flexy/div[5]/div[1]/div/ytd-playlist-panel-renderer/div/div[1]/div/div[1]/div[1]/div/div/yt-formatted-string/span[3]").text
         #when a commercial pops up
@@ -82,10 +82,10 @@ class downloadBot():
                 # Switch back to the downloader page
                 self.driver.switch_to.window(self.driver.window_handles[0])
                 sleep(0.5)
-                url_box = self.driver.find_element_by_xpath('/html/body/div[2]/div[1]/div[1]/form/input[1]')
+                url_box = self.driver.find_element(By.XPATH, '//*[@id="video"]')
                 #writes the song_url 
                 url_box.send_keys(song_url)
-                convert_btn = self.driver.find_element_by_xpath('/html/body/div[2]/div[1]/div[1]/form/input[2]')
+                convert_btn = self.driver.find_element(By.XPATH, '//*[@id="converter"]/div[3]/div[2]/input')
                 #somtimes the convert button does not respond because of issues at the network connection 
                 try:
                     convert_btn.click()
@@ -93,11 +93,12 @@ class downloadBot():
                 except Exception:
                     sleep(0.5)
                     self.driver.refresh()
-                    sleep(0.5)
+                    sleep(3.5)
                     convert_btn.click()
-                    sleep(0.5)
+                    sleep(2.5)
                 #the download button
-                download_btn = self.driver.find_element_by_xpath('/html/body/div[2]/div[1]/div[1]/div[3]/a[1]')
+                sleep(5)
+                download_btn = self.driver.find_element(By.XPATH, '//*[@id="download"]/a[1]')
                 download_btn.click()
                 sleep(5)
                 #close the pop-up
@@ -105,7 +106,7 @@ class downloadBot():
                 self.driver.close()
                 #switch back to the download page
                 self.driver.switch_to.window(self.driver.window_handles[0])
-                convert_next_btn = self.driver.find_element_by_xpath('/html/body/div[2]/div[1]/div[1]/div[3]/a[3]')
+                convert_next_btn = self.driver.find_element(By.XPATH, '//*[@id="download"]/a[2]')
                 convert_next_btn.click()
                 sleep(0.2)
                 # Switch back to the youtube playlist page
@@ -131,13 +132,7 @@ def main():
     #start command to download the playlis
     for url in playlist_url:
         bot.startDownload(url)
-    print("""
-██████╗░░█████╗░███╗░░██╗███████╗██╗
-██╔══██╗██╔══██╗████╗░██║██╔════╝██║
-██║░░██║██║░░██║██╔██╗██║█████╗░░██║
-██║░░██║██║░░██║██║╚████║██╔══╝░░╚═╝
-██████╔╝╚█████╔╝██║░╚███║███████╗██╗
-╚═════╝░░╚════╝░╚═╝░░╚══╝╚══════╝╚═╝""")
+    print("Done")
     print("\n-------------------------------------------------------------")
     print("""\nＳａｇｉｖ Ａｎｔｅｂｉ － Ａｌｌ Ｒｉｇｈｔｓ Ｒｅｓｅｒｖｅｄ\n""")
     print("-------------------------------------------------------------\n")
